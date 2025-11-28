@@ -1,7 +1,7 @@
 # Dependências da aplicação DevSecOps Lab
-Flask==2.3.0
-Werkzeug==2.3.0
-gunicorn==21.2.0
+Flask>=3.0.0
+Werkzeug>=3.0.0
+gunicorn>=21.2.0
 
 # AWS SDK para integração com Secrets Manager
 boto3==1.28.0
