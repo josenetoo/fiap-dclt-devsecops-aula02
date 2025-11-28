@@ -442,16 +442,4 @@ git push origin main
 
 ---
 
-## ✅ Checkpoint
-
-Ao final deste vídeo você deve ter:
-
-- [ ] Entender o risco de secrets vazados
-- [ ] Gitleaks instalado localmente
-- [ ] Testado detecção de secret falso
-- [ ] Workflow de security no pipeline
-- [ ] Pipeline passando
-
----
-
 **FIM DO VÍDEO 2.1** ✅
