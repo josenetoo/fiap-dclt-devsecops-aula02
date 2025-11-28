@@ -18,7 +18,7 @@ Implementar práticas de gestão segura de secrets usando Gitleaks, AWS Secrets 
 .
 ├── app.py                 # Aplicação Flask
 ├── requirements.txt       # Dependências
-├── Dockerfile            
+├── Dockerfile
 ├── .gitleaks.toml        # Configuração do Gitleaks
 ├── .pre-commit-config.yaml # Hooks locais
 ├── .github/

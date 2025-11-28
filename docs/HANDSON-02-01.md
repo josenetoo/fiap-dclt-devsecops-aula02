@@ -1,7 +1,7 @@
 # 🎬 Vídeo 2.1 - Secret Scanning com Gitleaks
 
-**Aula**: 2 - Gestão de Segredos  
-**Vídeo**: 2.1  
+**Aula**: 2 - Gestão de Segredos
+**Vídeo**: 2.1
 **Temas**: Problema de secrets vazados; Gitleaks; Detecção automatizada no pipeline
 
 ---
@@ -31,7 +31,7 @@ graph TB
     B -->|push| C[GitHub Público]
     C -->|scan automático| D[🤖 Bots maliciosos]
     D -->|em segundos| E[💀 Exploração]
-    
+
     E --> F[Crypto mining]
     E --> G[Data breach]
     E --> H[Conta AWS comprometida]
@@ -271,13 +271,13 @@ jobs:
   gitleaks:
     name: 🔍 Secret Scan
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Necessário para escanear histórico
-      
+
       - name: 🔍 Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
@@ -313,13 +313,13 @@ jobs:
   gitleaks:
     name: 🔍 Secret Scan
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: 🔍 Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:

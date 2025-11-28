@@ -1,8 +1,17 @@
 # Vídeo 2.2 - Branch Protection e Pre-commit Hooks
 
-**Aula**: 2 - Gestão de Segredos  
-**Vídeo**: 2.2  
+**Aula**: 2 - Gestão de Segredos
+**Vídeo**: 2.2
 **Temas**: Defesa em profundidade; Branch Protection; Pre-commit hooks; Múltiplas camadas de segurança
+
+---
+
+## 💡 Conceitos Rápidos
+
+| Termo | O que é |
+|-------|---------|
+| **Pre-commit Hook** | Script que roda **antes** do `git commit`. Se falhar, o commit é bloqueado. Funciona como um "porteiro" local. |
+| **Branch Protection** | Regra do GitHub que protege branches importantes (ex: `main`). Exige PR, aprovações e checks passando. |
 
 ---
 
@@ -29,19 +38,19 @@ graph TB
     subgraph "CAMADA 1: Local"
         A[Pre-commit Hook]
     end
-    
+
     subgraph "CAMADA 2: Pipeline"
         B[Gitleaks Action]
     end
-    
+
     subgraph "CAMADA 3: GitHub"
         C[Branch Protection]
     end
-    
+
     subgraph "CAMADA 4: Runtime"
         D[Secrets Manager]
     end
-    
+
     A --> B --> C --> D
 ```
 
@@ -66,7 +75,7 @@ graph TB
 graph LR
     A[Developer] -->|push direto| B[main]
     B -->|❌ BLOQUEADO| C[Rejeita]
-    
+
     A -->|cria branch| D[feature]
     D -->|PR| E[Review]
     E -->|checks passam| B
@@ -95,8 +104,10 @@ graph LR
 | Branch name pattern | `main` |
 | ✅ Require a pull request before merging | Marcar |
 | ✅ Require status checks to pass before merging | Marcar |
-| Status checks | Selecionar `gitleaks` |
+| Status checks | Buscar e selecionar `🔍 Secret Scan` |
 | ✅ Do not allow bypassing the above settings | Marcar |
+
+> 💡 **Dica**: Busque por "Secret" no campo de pesquisa. O nome do status check é o `name` do job no workflow, não o ID.
 
 5. Clique **Create**
 
@@ -167,10 +178,18 @@ graph LR
 
 ### Passo 6: Instalar Pre-commit
 
-**Linux/Mac:**
+**Mac (Homebrew - recomendado):**
 ```bash
-# Instalar pre-commit
-pip install pre-commit
+brew install pre-commit
+
+# Verificar instalação
+pre-commit --version
+# Esperado: pre-commit 3.x.x ou 4.x.x
+```
+
+**Linux:**
+```bash
+pip3 install pre-commit
 
 # Verificar instalação
 pre-commit --version
@@ -179,7 +198,6 @@ pre-commit --version
 
 **Windows (PowerShell):**
 ```powershell
-# Instalar pre-commit
 pip install pre-commit
 
 # Verificar instalação
