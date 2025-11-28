@@ -155,14 +155,40 @@ aws secretsmanager get-secret-value \
 
 ## 🐍 Parte 3: Integrar com Aplicação Python
 
-### Passo 7: Código para Buscar Secret
+### Passo 7: Atualizar o `app.py`
 
-Adicione esta função ao seu `app.py`:
+Substitua o conteúdo do arquivo `app.py` pelo código abaixo.
+
+> 💡 **O que mudou?** Adicionamos a função `get_secret()` e a integração com AWS Secrets Manager. O código antigo está comentado para referência.
+
+**Novo `app.py` completo:**
 
 ```python
-import boto3
+"""
+DevSecOps Lab - Aplicação Vulnerável para Fins Educacionais
+ATENÇÃO: Esta aplicação contém vulnerabilidades INTENCIONAIS para demonstração.
+NÃO USE EM PRODUÇÃO!
+"""
+
 import json
+import os
+import sqlite3
+import subprocess
+
+import boto3
 from botocore.exceptions import ClientError
+from flask import Flask, jsonify, render_template_string, request
+
+app = Flask(__name__)
+
+# Configuração do banco de dados
+DATABASE = os.getenv("DATABASE_PATH", "users.db")
+
+
+# ============================================
+# AWS SECRETS MANAGER - NOVO!
+# ============================================
+
 
 def get_secret(secret_name: str, region: str = "us-east-1") -> dict:
     """
@@ -175,49 +201,233 @@ def get_secret(secret_name: str, region: str = "us-east-1") -> dict:
     Returns:
         dict: Conteúdo do secret parseado como JSON
     """
-    client = boto3.client('secretsmanager', region_name=region)
+    client = boto3.client("secretsmanager", region_name=region)
 
     try:
         response = client.get_secret_value(SecretId=secret_name)
-        secret_string = response['SecretString']
+        secret_string = response["SecretString"]
         return json.loads(secret_string)
     except ClientError as e:
         print(f"Erro ao buscar secret: {e}")
         raise
-```
 
----
 
-### Passo 8: Usar Secret na Aplicação
+# ============================================
+# CONFIGURAÇÃO DE CREDENCIAIS
+# ============================================
+# ANTES (inseguro - hardcoded ou variáveis de ambiente):
+# DB_HOST = os.getenv("DB_HOST", "localhost")
+# DB_USER = os.getenv("DB_USER", "admin")
+# DB_PASSWORD = os.getenv("DB_PASSWORD", "senha123")
 
-```python
-from flask import Flask, jsonify
-
-app = Flask(__name__)
-
-# Carregar secrets na inicialização
+# DEPOIS (seguro - AWS Secrets Manager):
 try:
     secrets = get_secret("devsecops/app/credentials")
-    DB_HOST = secrets['db_host']
-    DB_USER = secrets['db_user']
-    DB_PASSWORD = secrets['db_password']
+    DB_HOST = secrets["db_host"]
+    DB_USER = secrets["db_user"]
+    DB_PASSWORD = secrets["db_password"]
+    print("✅ Secrets carregados do AWS Secrets Manager")
 except Exception as e:
-    print(f"⚠️ Não foi possível carregar secrets: {e}")
+    print(f"⚠️ Não foi possível carregar secrets da AWS: {e}")
     # Fallback para desenvolvimento local
     DB_HOST = "localhost"
     DB_USER = "dev"
     DB_PASSWORD = "dev123"
 
-@app.route('/db-status')
+
+def get_db():
+    """Conecta ao banco de dados SQLite"""
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def init_db():
+    """Inicializa o banco de dados com dados de exemplo"""
+    conn = get_db()
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            email TEXT NOT NULL,
+            password TEXT NOT NULL
+        )
+    """
+    )
+    # Dados de exemplo
+    conn.execute(
+        "INSERT OR IGNORE INTO users (id, username, email, password) "
+        "VALUES (1, 'admin', 'admin@example.com', 'admin123')"
+    )
+    conn.execute(
+        "INSERT OR IGNORE INTO users (id, username, email, password) "
+        "VALUES (2, 'user', 'user@example.com', 'user123')"
+    )
+    conn.commit()
+    conn.close()
+
+
+# ============================================
+# ENDPOINTS DA APLICAÇÃO
+# ============================================
+
+
+@app.route("/")
+def home():
+    """Página inicial"""
+    return jsonify(
+        {
+            "app": "DevSecOps Lab",
+            "version": "1.0.0",
+            "status": "running",
+            "endpoints": [
+                "GET /health",
+                "GET /db-status",
+                "GET /users",
+                "GET /user?id=1",
+                "GET /search?q=termo",
+                "POST /login",
+            ],
+        }
+    )
+
+
+@app.route("/health")
+def health():
+    """Health check para o container"""
+    return jsonify({"status": "healthy"})
+
+
+@app.route("/db-status")
 def db_status():
-    """Endpoint para verificar conexão (sem expor senha!)"""
-    return jsonify({
-        "status": "configured",
-        "host": DB_HOST,
-        "user": DB_USER,
-        "password": "********"  # NUNCA exponha a senha!
-    })
+    """Endpoint para verificar configuração do banco (sem expor senha!)"""
+    return jsonify(
+        {
+            "status": "configured",
+            "host": DB_HOST,
+            "user": DB_USER,
+            "password": "********",  # NUNCA exponha a senha!
+        }
+    )
+
+
+@app.route("/users")
+def list_users():
+    """Lista todos os usuários"""
+    conn = get_db()
+    users = conn.execute("SELECT id, username, email FROM users").fetchall()
+    conn.close()
+    return jsonify([dict(user) for user in users])
+
+
+# ============================================
+# VULNERABILIDADES INTENCIONAIS (PARA DEMO)
+# ============================================
+
+
+@app.route("/user")
+def get_user():
+    """
+    VULNERABILIDADE: SQL Injection
+    Exemplo de exploração: /user?id=1 OR 1=1
+    """
+    user_id = request.args.get("id", "1")
+    conn = get_db()
+    # INSEGURO: Concatenação direta de input do usuário
+    query = f"SELECT * FROM users WHERE id = {user_id}"
+    try:
+        user = conn.execute(query).fetchone()
+        conn.close()
+        if user:
+            return jsonify(dict(user))
+        return jsonify({"error": "User not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/search")
+def search():
+    """
+    VULNERABILIDADE: Cross-Site Scripting (XSS)
+    Exemplo de exploração: /search?q=<script>alert('XSS')</script>
+    """
+    query = request.args.get("q", "")
+    # INSEGURO: Renderiza input do usuário sem sanitização
+    html = f"""
+    <html>
+        <head><title>Search Results</title></head>
+        <body>
+            <h1>Resultados para: {query}</h1>
+            <p>Nenhum resultado encontrado.</p>
+        </body>
+    </html>
+    """
+    return render_template_string(html)
+
+
+@app.route("/ping")
+def ping():
+    """
+    VULNERABILIDADE: Command Injection
+    Exemplo de exploração: /ping?host=localhost;cat /etc/passwd
+    """
+    host = request.args.get("host", "localhost")
+    # INSEGURO: Input do usuário passado direto para shell
+    try:
+        result = subprocess.check_output(
+            f"ping -c 1 {host}", shell=True, text=True
+        )
+        return f"<pre>{result}</pre>"
+    except subprocess.CalledProcessError as e:
+        return f"<pre>Error: {e}</pre>", 500
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    """
+    VULNERABILIDADE: Credenciais em log
+    """
+    data = request.get_json() or {}
+    username = data.get("username", "")
+    password = data.get("password", "")
+
+    # INSEGURO: Loga credenciais (expostas em logs do container)
+    print(f"Login attempt: username={username}, password={password}")
+
+    conn = get_db()
+    # INSEGURO: SQL Injection no login
+    query = (
+        f"SELECT * FROM users "
+        f"WHERE username = '{username}' AND password = '{password}'"
+    )
+    user = conn.execute(query).fetchone()
+    conn.close()
+
+    if user:
+        return jsonify({"message": "Login successful", "user": dict(user)})
+    return jsonify({"error": "Invalid credentials"}), 401
+
+
+# ============================================
+# INICIALIZAÇÃO
+# ============================================
+
+if __name__ == "__main__":
+    init_db()
+    # INSEGURO: Debug mode em produção
+    app.run(host="0.0.0.0", port=5000, debug=True)
 ```
+
+---
+
+### Passo 8: Entender as Mudanças
+
+| Antes (Inseguro) | Depois (Seguro) |
+|------------------|-----------------|
+| `DB_PASSWORD = os.getenv("DB_PASSWORD")` | `secrets = get_secret("devsecops/app/credentials")` |
+| Senha em variável de ambiente | Senha buscada em runtime da AWS |
+| Pode vazar em logs/dumps | Nunca fica no código ou ambiente |
 
 ---
 
@@ -227,6 +437,13 @@ def db_status():
 ```bash
 cd ~/projetos/aula02-secrets
 
+# Criar e ativar ambiente virtual (primeira vez)
+python3 -m venv venv
+source venv/bin/activate
+
+# Instalar dependências (primeira vez)
+pip install -r requirements.txt
+
 # Configurar profile AWS
 export AWS_PROFILE=fiapaws
 
@@ -234,9 +451,11 @@ export AWS_PROFILE=fiapaws
 python app.py
 ```
 
+> 💡 **Nas próximas vezes**, só precisa ativar o venv: `source venv/bin/activate`
+
 **Testar endpoint:**
 ```bash
-curl http://localhost:5000/db-status
+curl http://localhost:5001/db-status
 ```
 
 **Resultado esperado:**
@@ -328,18 +547,6 @@ graph TB
 | `ResourceNotFoundException` | Secret não existe | Verificar nome e região |
 | `ExpiredTokenException` | Credenciais expiradas | Atualizar AWS credentials |
 | Aplicação não encontra secret | Região errada | Verificar `region_name` |
-
----
-
-## ✅ Checkpoint
-
-Ao final deste vídeo você deve ter:
-
-- [ ] Entender vantagens do Secrets Manager
-- [ ] Secret criado na AWS
-- [ ] Código Python para buscar secrets
-- [ ] Endpoint `/db-status` funcionando
-- [ ] Entender rotação de secrets
 
 ---
 
