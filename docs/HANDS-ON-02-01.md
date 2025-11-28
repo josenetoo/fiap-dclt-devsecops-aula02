@@ -17,7 +17,7 @@
 | Conta GitHub | Acesso ao github.com |
 
 ### Primeira vez?
-→ Faça fork do repositório `aula02-secrets` para sua conta GitHub
+→ Faça fork do repositório `fiap-dclt-devsecops-aula02` para sua conta GitHub
 
 ---
 
@@ -83,7 +83,7 @@ graph LR
 
 ### Passo 4: Fork do Repositório
 
-1. Acesse: `https://github.com/fiap-devsecops/aula02-secrets`
+1. Acesse: `https://github.com/josenetoo/fiap-dclt-devsecops-aula02`
 2. Clique em **Fork**
 3. Selecione sua conta
 
@@ -96,8 +96,8 @@ graph LR
 cd ~/projetos
 
 # Clonar SEU fork
-git clone https://github.com/SEU-USUARIO/aula02-secrets.git
-cd aula02-secrets
+git clone https://github.com/SEU-USUARIO/fiap-dclt-devsecops-aula02.git
+cd fiap-dclt-devsecops-aula02
 
 # Verificar estrutura
 ls -la
@@ -105,11 +105,11 @@ ls -la
 
 **Windows (PowerShell):**
 ```powershell
-cd ~\projetos
+cd ~\fiap-devsecops
 
 # Clonar SEU fork
-git clone https://github.com/SEU-USUARIO/aula02-secrets.git
-cd aula02-secrets
+git clone https://github.com/SEU-USUARIO/fiap-dclt-devsecops-aula02.git
+cd fiap-dclt-devsecops-aula02
 
 # Verificar estrutura
 Get-ChildItem
@@ -117,7 +117,7 @@ Get-ChildItem
 
 **Estrutura esperada:**
 ```
-aula02-secrets/
+fiap-dclt-devsecops-aula02/
 ├── app.py
 ├── requirements.txt
 ├── Dockerfile
@@ -162,7 +162,7 @@ gitleaks version
 
 **Linux/Mac:**
 ```bash
-cd ~/projetos/aula02-secrets
+cd ~/projetos/fiap-dclt-devsecops-aula02
 
 # Scan do diretório atual
 gitleaks detect --source . -v
@@ -173,7 +173,7 @@ gitleaks detect --source . --log-opts="--all" -v
 
 **Windows (PowerShell):**
 ```powershell
-cd ~\projetos\aula02-secrets
+cd ~\fiap-devsecops\fiap-dclt-devsecops-aula02
 
 # Scan do diretório atual
 gitleaks detect --source . -v
@@ -245,7 +245,7 @@ rm test-secret.txt
 
 **Linux/Mac:**
 ```bash
-cd ~/projetos/aula02-secrets
+cd ~/projetos/fiap-dclt-devsecops-aula02
 
 # Criar diretório de workflows
 mkdir -p .github/workflows
@@ -287,7 +287,7 @@ EOF
 
 **Windows (PowerShell):**
 ```powershell
-cd ~\projetos\aula02-secrets
+cd ~\fiap-devsecops\fiap-dclt-devsecops-aula02
 
 # Criar diretório de workflows
 New-Item -ItemType Directory -Force -Path .github/workflows
@@ -352,7 +352,7 @@ graph LR
 
 **Linux/Mac:**
 ```bash
-cd ~/projetos/aula02-secrets
+cd ~/projetos/fiap-dclt-devsecops-aula02
 
 # Adicionar workflow
 git add .github/workflows/security.yml
@@ -366,7 +366,7 @@ git push origin main
 
 **Windows (PowerShell):**
 ```powershell
-cd ~\projetos\aula02-secrets
+cd ~\fiap-devsecops\fiap-dclt-devsecops-aula02
 
 # Adicionar workflow
 git add .github/workflows/security.yml

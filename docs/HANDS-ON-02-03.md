@@ -435,7 +435,7 @@ if __name__ == "__main__":
 
 **Linux/Mac:**
 ```bash
-cd ~/projetos/aula02-secrets
+cd ~/projetos/fiap-dclt-devsecops-aula02
 
 # Criar e ativar ambiente virtual (primeira vez)
 python3 -m venv venv

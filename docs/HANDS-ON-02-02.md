@@ -124,7 +124,7 @@ graph LR
 
 **Linux/Mac:**
 ```bash
-cd ~/projetos/aula02-secrets
+cd ~/projetos/fiap-dclt-devsecops-aula02
 
 # Criar arquivo de teste
 echo "teste" > teste.txt
@@ -213,7 +213,7 @@ O repositório já tem o arquivo `.pre-commit-config.yaml`:
 
 **Linux/Mac:**
 ```bash
-cd ~/projetos/aula02-secrets
+cd ~/projetos/fiap-dclt-devsecops-aula02
 cat .pre-commit-config.yaml
 ```
 
@@ -242,7 +242,7 @@ repos:
 
 **Linux/Mac:**
 ```bash
-cd ~/projetos/aula02-secrets
+cd ~/projetos/fiap-dclt-devsecops-aula02
 
 # Instalar hooks no repositório
 pre-commit install
@@ -253,7 +253,7 @@ pre-commit install
 
 **Windows (PowerShell):**
 ```powershell
-cd ~\projetos\aula02-secrets
+cd ~\fiap-devsecops\fiap-dclt-devsecops-aula02
 
 # Instalar hooks no repositório
 pre-commit install
