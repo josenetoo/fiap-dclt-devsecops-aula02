@@ -1,7 +1,7 @@
 # Vídeo 2.3 - AWS Secrets Manager
 
-**Aula**: 2 - Gestão de Segredos  
-**Vídeo**: 2.3  
+**Aula**: 2 - Gestão de Segredos
+**Vídeo**: 2.3
 **Temas**: AWS Secrets Manager; Armazenamento seguro; Integração com aplicação; Rotação de secrets
 
 ---
@@ -167,16 +167,16 @@ from botocore.exceptions import ClientError
 def get_secret(secret_name: str, region: str = "us-east-1") -> dict:
     """
     Busca um secret do AWS Secrets Manager.
-    
+
     Args:
         secret_name: Nome do secret (ex: devsecops/app/credentials)
         region: Região AWS
-    
+
     Returns:
         dict: Conteúdo do secret parseado como JSON
     """
     client = boto3.client('secretsmanager', region_name=region)
-    
+
     try:
         response = client.get_secret_value(SecretId=secret_name)
         secret_string = response['SecretString']
