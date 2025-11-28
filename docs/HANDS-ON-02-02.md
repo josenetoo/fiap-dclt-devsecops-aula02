@@ -360,16 +360,4 @@ check-json........................Passed
 
 ---
 
-## ✅ Checkpoint
-
-Ao final deste vídeo você deve ter:
-
-- [ ] Entender defesa em profundidade
-- [ ] Branch Protection configurado para `main`
-- [ ] Pre-commit instalado e ativado
-- [ ] Testado que pre-commit bloqueia secrets
-- [ ] Push direto para main bloqueado
-
----
-
 **FIM DO VÍDEO 2.2** ✅

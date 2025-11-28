@@ -24,7 +24,9 @@ Implementar práticas de gestão segura de secrets usando Gitleaks, AWS Secrets 
 ├── .github/
 │   └── workflows/        # (Criado durante a aula)
 └── docs/
-    ├── PASSO-A-PASSO.md
+    ├── HANDS-ON-02-01.md  # Vídeo 01
+    ├── HANDS-ON-02-02.md  # Vídeo 02
+    ├── HANDS-ON-02-03.md  # Vídeo 03
     └── CHEATSHEET.md
 ```
 
@@ -38,15 +40,15 @@ Implementar práticas de gestão segura de secrets usando Gitleaks, AWS Secrets 
 
 1. **Fork** este repositório
 2. Configure os secrets do AWS
-3. Siga os arquivos HANDSON de cada vídeo
+3. Siga os arquivos HANDS-ON de cada vídeo
 
 ## 📚 Documentação
 
 | Vídeo | Hands-on |
 |-------|----------|
-| 01 - Secret Scanning | [HANDSON-02-01.md](docs/HANDSON-02-01.md) |
-| 02 - Branch Protection | [HANDSON-02-02.md](docs/HANDSON-02-02.md) |
-| 03 - Secrets Manager | [HANDSON-02-03.md](docs/HANDSON-02-03.md) |
+| 01 - Secret Scanning | [HANDS-ON-02-01.md](docs/HANDS-ON-02-01.md) |
+| 02 - Branch Protection | [HANDS-ON-02-02.md](docs/HANDS-ON-02-02.md) |
+| 03 - Secrets Manager | [HANDS-ON-02-03.md](docs/HANDS-ON-02-03.md) |
 
 **Referência rápida**: [Cheatsheet](docs/CHEATSHEET.md)
 
