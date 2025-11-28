@@ -1,0 +1,47 @@
+# ============================================
+# Gitleaks Configuration
+# Documentação: https://github.com/gitleaks/gitleaks
+# ============================================
+
+title = "Gitleaks Config for DevSecOps Course"
+
+# Usar regras padrão do Gitleaks
+[extend]
+useDefault = true
+
+# ============================================
+# ALLOWLIST - Ignorar falsos positivos
+# ============================================
+[allowlist]
+description = "Allowlist for false positives"
+
+# Ignorar arquivos específicos
+paths = [
+    '''\.gitleaks\.toml$''',
+    '''\.git/''',
+    '''node_modules/''',
+    '''__pycache__/''',
+    '''\.env\.example$''',
+    '''docs/.*\.md$''',
+]
+
+# Ignorar padrões de exemplo/documentação
+regexes = [
+    '''AKIAIOSFODNN7EXAMPLE''',
+    '''wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY''',
+    '''your-.*-here''',
+    '''<your-.*>''',
+    '''example\.com''',
+    '''localhost''',
+]
+
+# ============================================
+# REGRAS CUSTOMIZADAS (opcional)
+# ============================================
+
+# Exemplo: Detectar senhas hardcoded em Python
+# [[rules]]
+# id = "hardcoded-password"
+# description = "Hardcoded password in code"
+# regex = '''password\s*=\s*['\"][^'\"]{8,}['\"]'''
+# tags = ["password", "hardcoded"]
